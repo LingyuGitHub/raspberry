@@ -72,7 +72,7 @@ static int set_p5pins(const int *pins, int n){
 		if((wpi=pins[i])>30){
 			return -1;
 		}
-		p5pins[i]=pins[wpi];
+		p5pins[i]=wiringpi2board[wpi];
 	}
 	return 0;
 }
@@ -119,11 +119,22 @@ extern int servo_setup(){
 	return 1;
 }
 
-extern void servo_setpwm(int pi_gpio, int step){
+static int get_pinindex(int pin){
+	int i=0;
+	for(i=0;i<p1_num;i++){
+		if(p1pins[i]==pin)
+			return i;
+	}
+
+	return -1;
+
+}
+
+extern void servo_setpwm_step(int pi_gpio, int step){
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
-	sprintf(cmd, "echo %d=%d > %s", pin, step, FIFO_FILE);
+	sprintf(cmd, "echo %d=%d > %s", get_pinindex(pin), step, FIFO_FILE);
 	system(cmd);
 }
 
@@ -131,7 +142,7 @@ extern void servo_setpwm_percent(int pi_gpio, int percent){
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
-	sprintf(cmd, "echo %d=%d%% > %s", pin, percent, FIFO_FILE);
+	sprintf(cmd, "echo %d=%d%% > %s", get_pinindex(pin), percent, FIFO_FILE);
 
 	system(cmd);
 }
@@ -140,7 +151,7 @@ extern void servo_setpwm_us(int pi_gpio, int us){
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
-	sprintf(cmd, "echo %d=%dus > %s", pin, us, FIFO_FILE);
+	sprintf(cmd, "echo %d=%dus > %s", get_pinindex(pin), us, FIFO_FILE);
 
 	system(cmd);
 }
@@ -149,14 +160,24 @@ extern void servo_setpwm_addstep(int pi_gpio, int addstep){
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
-	sprintf(cmd, "echo %d=%+d > %s", pin, addstep, FIFO_FILE);
+	sprintf(cmd, "echo %d=%+d > %s", get_pinindex(pin), addstep, FIFO_FILE);
 
 	system(cmd);
 }
 
 
 int main(){
-	return servo_setup();
+	int pins[1]={0};
+	int pin5s[1]={8};
+	int value=0;
+	set_p1pins(pins,1);
+	set_p5pins(pin5s,1);
+	servo_setup();
+	while(1){
+		printf("intput value: ");
+		fscanf(stdin, "%d", &value);
+		servo_setpwm_step(pins[0], value);
+	}
 }
 
 
