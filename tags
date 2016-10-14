@@ -1,0 +1,28 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+cycle_time	callservo.c	/^static int cycle_time=20000;$/;"	v	file:
+main	blink.c	/^int main (int argc,char* argv[])$/;"	f
+main	callservo.c	/^int main(){$/;"	f
+main	car.c	/^int main(int argc, char** argv){$/;"	f
+main	pwm_software.c	/^int main (int argc,char* argv[])$/;"	f
+max	callservo.c	/^static int max=250;$/;"	v	file:
+mgpiowrite	car.c	/^void mgpiowrite(int a0, int a1, int a2, int a3){$/;"	f
+min	callservo.c	/^static int min=50;$/;"	v	file:
+p1_num	callservo.c	/^int p1_num=8, p5_num=0;$/;"	v
+p1pins	callservo.c	/^static int *p1pins={7,11,12,13,15,16,18,22};$/;"	v	file:
+p5_num	callservo.c	/^int p1_num=8, p5_num=0;$/;"	v
+p5pins	callservo.c	/^static int *p5pins=NULL;$/;"	v	file:
+pins2str	callservo.c	/^static void pins2str(const int *pins, int n, char *str){$/;"	f	file:
+servo_setup	callservo.c	/^extern int servo_setup(){$/;"	f
+set_cycle_time	callservo.c	/^static void set_cycle_time(int time){$/;"	f	file:
+set_max	callservo.c	/^static void set_max(int max_){$/;"	f	file:
+set_min	callservo.c	/^static void set_min(int min_){$/;"	f	file:
+set_p1pins	callservo.c	/^static int set_p1pins(const int *pins, int n){$/;"	f	file:
+set_p5pins	callservo.c	/^static int set_p5pins(const int *pins, int n){$/;"	f	file:
+set_step_size	callservo.c	/^static void set_step_size(int size){$/;"	f	file:
+step_size	callservo.c	/^static int step_size=10;$/;"	v	file:
+wiringpi2board	callservo.c	/^const static int wiringpi2board[31]=$/;"	v	file:
