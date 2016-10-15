@@ -16,7 +16,7 @@ extern "C" {
 	extern void set_max(int max_);	
 	extern int set_p1pins(const int* pins, int n);
 	extern int set_p5pins(const int* pins, int n);
-	extern int servo_setup();
+	extern int servo_setup(char* redirect);
 
 	extern void servo_set_step(int pi_gpio, int step);
 	extern void servo_set_us(int pi_gpio, int us);

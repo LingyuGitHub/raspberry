@@ -15,6 +15,8 @@ static int *p5pins=NULL;
 const static char *FIFO_FILE = "/dev/servoblaster";
 /*board*/
 /*const static int p1pins_default[8]={7,11,12,13,15,16,18,22};*/
+
+/*wiringpi*/
 const static int p1pins_default[8]={7, 0, 1, 2, 3, 4, 5, 6};	/*wiringpi*/
 const static int p1pins_default_num=8;
 const static int wiringpi2board[31]=
@@ -66,7 +68,6 @@ extern int set_p1pins(const int *pins, int n){
 	}
 	return 0;
 }
-
 /*设置servoblaster p5的引脚，输入引脚采用wiringpi编号*/
 extern int set_p5pins(const int *pins, int n){
 	int i=0, wpi=0;
@@ -80,7 +81,7 @@ extern int set_p5pins(const int *pins, int n){
 	}
 	return 0;
 }
-
+/*把引脚数组拼成字符串，[1,2,3,4]="1,2,3,4"*/
 static void pins2str(const int *pins, int n, char *str){
 	int i=0;	
 
@@ -96,7 +97,7 @@ static void pins2str(const int *pins, int n, char *str){
 }
 
 /*根据设置的参数启动 servoblaster*/
-extern int servo_setup(){
+extern int servo_setup(char* redirect){
 	char cmd[500]={"servod"};
 	char pinstr[200]={0.0};
 
@@ -104,8 +105,6 @@ extern int servo_setup(){
 	sprintf(cmd, "%s --step-size=%d", cmd, step_size);
 	sprintf(cmd, "%s --min=%d", cmd, min);
 	sprintf(cmd, "%s --max=%d", cmd, max);
-
-	printf("%s\n", cmd);
 
 	if(p1pins==NULL){
 		set_p1pins(p1pins_default, p1pins_default_num);
@@ -117,6 +116,10 @@ extern int servo_setup(){
 	if(p5pins!=NULL){
 		pins2str(p5pins,p5_num,pinstr);	
 		sprintf(cmd, "%s --p5pins=%s", cmd, pinstr);
+	}
+
+	if(redirect!=NULL){
+		sprintf(cmd, "%s >> %s", cmd, redirect);
 	}
 
 	printf("%s\n", cmd);
@@ -190,19 +193,6 @@ extern void servo_set(int pi_gpio, int value, int type){
 	}
 }
 
-int main(){
-	int pins[1]={0};
-	int pin5s[1]={8};
-	int value=0;
-	set_p1pins(pins,1);
-	set_p5pins(pin5s,1);
-	servo_setup();
-	while(1){
-		printf("intput value: ");
-		fscanf(stdin, "%d", &value);
-		servo_set_step(pins[0], value);
-	}
-}
 
 
 
