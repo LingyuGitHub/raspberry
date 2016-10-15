@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <memory.h>
-
+#include "callservo.h"
 
 static int cycle_time=20000;
 static int step_size=10;
@@ -28,22 +28,24 @@ const static int wiringpi2board[31]=
 		27					/*30*/
 	};
 
-static void set_cycle_time(int time){
+/*设置脉冲循环时间为time us，默认20000us*/
+extern void set_cycle_time(int time){
 	cycle_time=time;
 }
-
-static void set_step_size(int size){
+/*设置脉冲步长size us，默认10us*/
+extern void set_step_size(int size){
 	step_size=size;
 }
 
-static void set_min(int min_){
+/*设置最小控制脉冲时间 us，默认500us*/
+extern void set_min(int min_){
 	min=min_;
 }
-
-static void set_max(int max_){
+/*设置最大控制脉冲时间 us，默认2500us*/
+extern void set_max(int max_){
 	max=max_;
 }
-
+/*将wiringpi gpio编号转为板载编号*/
 static int pi2board(int pi_gpio){
 	if(pi_gpio>30){
 		return -1;
@@ -51,7 +53,8 @@ static int pi2board(int pi_gpio){
 
 	return wiringpi2board[pi_gpio];
 }
-static int set_p1pins(const int *pins, int n){
+/*设置servoblaster p1的引脚，输入引脚采用wiringpi编号*/
+extern int set_p1pins(const int *pins, int n){
 	int i=0, wpi=0;
 	p1_num=n;
 	p1pins=(int*)malloc(n*sizeof(int));
@@ -64,7 +67,8 @@ static int set_p1pins(const int *pins, int n){
 	return 0;
 }
 
-static int set_p5pins(const int *pins, int n){
+/*设置servoblaster p5的引脚，输入引脚采用wiringpi编号*/
+extern int set_p5pins(const int *pins, int n){
 	int i=0, wpi=0;
 	p5_num=n;
 	p5pins=(int*)malloc(n*sizeof(int));
@@ -91,6 +95,7 @@ static void pins2str(const int *pins, int n, char *str){
 	return;
 }
 
+/*根据设置的参数启动 servoblaster*/
 extern int servo_setup(){
 	char cmd[500]={"servod"};
 	char pinstr[200]={0.0};
@@ -130,15 +135,16 @@ static int get_pinindex(int pin){
 
 }
 
-extern void servo_setpwm_step(int pi_gpio, int step){
+/*设置指定gpio 输出指定步长脉冲*/
+extern void servo_set_step(int pi_gpio, int step){
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
 	sprintf(cmd, "echo %d=%d > %s", get_pinindex(pin), step, FIFO_FILE);
 	system(cmd);
 }
-
-extern void servo_setpwm_percent(int pi_gpio, int percent){
+/*设置指定gpio 输出指定时间脉冲*/
+extern void servo_set_percent(int pi_gpio, int percent){
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
@@ -146,8 +152,8 @@ extern void servo_setpwm_percent(int pi_gpio, int percent){
 
 	system(cmd);
 }
-
-extern void servo_setpwm_us(int pi_gpio, int us){
+/*设置指定gpio 输出指定比例脉冲*/
+extern void servo_set_us(int pi_gpio, int us){
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
@@ -155,8 +161,8 @@ extern void servo_setpwm_us(int pi_gpio, int us){
 
 	system(cmd);
 }
-
-extern void servo_setpwm_addstep(int pi_gpio, int addstep){
+/*设置指定gpio 增加指定步长脉冲*/
+extern void servo_set_addstep(int pi_gpio, int addstep){
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
@@ -165,6 +171,24 @@ extern void servo_setpwm_addstep(int pi_gpio, int addstep){
 	system(cmd);
 }
 
+extern void servo_set(int pi_gpio, int value, int type){
+	switch (type){
+		case SET_TYPE_STEP:
+			servo_set_step(pi_gpio, value);
+			break;
+		case SET_TYPE_TIME:
+			servo_set_us(pi_gpio, value);
+			break;
+		case SET_TYPE_PCNT :
+			servo_set_percent(pi_gpio, value);
+			break;
+		case SET_TYPE_ADD:
+			servo_set_addstep(pi_gpio,value);
+			break;
+		default:
+			break;
+	}
+}
 
 int main(){
 	int pins[1]={0};
@@ -176,7 +200,7 @@ int main(){
 	while(1){
 		printf("intput value: ");
 		fscanf(stdin, "%d", &value);
-		servo_setpwm_step(pins[0], value);
+		servo_set_step(pins[0], value);
 	}
 }
 
