@@ -1,3 +1,6 @@
+/*调用servoblaster
+ *所有的输入gpio引脚以wiringpi的编号为准
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
