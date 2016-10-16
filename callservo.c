@@ -11,7 +11,7 @@ static int cycle_time=20000;
 static int step_size=10;
 static int min=50;
 static int max=250;
-int p1_num=0, p5_num=0;
+static int p1_num=0, p5_num=0;
 static int *p1pins=NULL;
 static int *p5pins=NULL;
 
@@ -34,32 +34,30 @@ const static int wiringpi2board[31]=
 	};
 
 /*设置脉冲循环时间为time us，默认20000us*/
-extern void set_cycle_time(int time){
+extern void servo_set_cycletime(int time){
 	cycle_time=time;
 }
 /*设置脉冲步长size us，默认10us*/
-extern void set_step_size(int size){
+extern void servo_set_stepsize(int size){
 	step_size=size;
 }
 
 /*设置最小控制脉冲时间 us，默认500us*/
-extern void set_min(int min_){
+extern void servo_set_min(int min_){
 	min=min_;
 }
 /*设置最大控制脉冲时间 us，默认2500us*/
-extern void set_max(int max_){
+extern void servo_set_max(int max_){
 	max=max_;
 }
 /*将wiringpi gpio编号转为板载编号*/
 static int pi2board(int pi_gpio){
-	if(pi_gpio>30){
-		return -1;
-	}
+	if(pi_gpio>30) return -1;
 
 	return wiringpi2board[pi_gpio];
 }
 /*设置servoblaster p1的引脚，输入引脚采用wiringpi编号*/
-extern int set_p1pins(const int *pins, int n){
+extern int servo_set_p1pins(const int *pins, int n){
 	int i=0, wpi=0;
 	p1_num=n;
 	p1pins=(int*)malloc(n*sizeof(int));
@@ -72,7 +70,7 @@ extern int set_p1pins(const int *pins, int n){
 	return 0;
 }
 /*设置servoblaster p5的引脚，输入引脚采用wiringpi编号*/
-extern int set_p5pins(const int *pins, int n){
+extern int servo_set_p5pins(const int *pins, int n){
 	int i=0, wpi=0;
 	p5_num=n;
 	p5pins=(int*)malloc(n*sizeof(int));
@@ -110,7 +108,7 @@ extern int servo_setup(char* redirect){
 	sprintf(cmd, "%s --max=%d", cmd, max);
 
 	if(p1pins==NULL){
-		set_p1pins(p1pins_default, p1pins_default_num);
+		servo_set_p1pins(p1pins_default, p1pins_default_num);
 	}
 
 	pins2str(p1pins,p1_num,pinstr);	

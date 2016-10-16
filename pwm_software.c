@@ -9,24 +9,50 @@
  * @author Darran Zhang @ codelast.com
  */
 
+#define DO 2093
+#define RE 2349
+#define MI 2637
+#define FA 2794
+#define SO 3136
+#define LA 3520
+#define XI 3951
+#define DO1 4186
+#define RI1 4698
+
+typedef struct{
+	int freq;
+	int t_ms;
+}TONE;
+:q
+
+TONE star_notation[]=
+{
+	{DO,
+void beep(int freq, int t_ms){
+	int range=0;
+	if(freq<2000||freq>5000) return;
+	range=600000/freq;
+	pwmSetRange(range);
+	pwmWrite(1,range/2);
+	if(t_ms>0){
+		delay(t_ms);
+	}
+}
+
 int main (int argc,char* argv[])
 {
-  if (argc < 2) {
-    printf("Usage example: ./pwm_software gpio_port\n");
-    return 1;
-  }
-  int gpioPort = atoi(argv[1]);
+    int gpioPort = 1;
 
-  wiringPiSetup();
+  	wiringPiSetup();
+	pinMode(1, PWM_OUTPUT);
+	pwmSetMode(PWM_MODE_MS);
 
-  softPwmCreate(gpioPort, 0, 100);  // setup software PWM to the specified port with initial value 0 & PWM range 100
+	pwmSetClock(32);
 
-  int value = 0;
-  while(1) {
-	  fprintf(stdout,"Please input pwm value: ");
-	  fscanf(stdin, "%d", &value);
-      softPwmWrite(gpioPort, value);
-  }
+	int value = 0;
+	while(1) {
+		
+	}
 
-  return 0;
+	return 0;
 }

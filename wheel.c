@@ -1,3 +1,4 @@
+/*通过L298N控制两个车轮的转向，实现前进、后退，左转、右转*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <wiringPi.h>

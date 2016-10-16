@@ -3,12 +3,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-/**
- * A program to blink the LED using WiringPi.
- *
- * @author Darran Zhang @ codelast.com
- */
-
 int main (int argc,char* argv[])
 {
   if (argc < 2) {
