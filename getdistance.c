@@ -5,13 +5,21 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
+#include <pthread.h>
 #include "msensor.h"
 #include "mcomn.h"
 
 /*控制输出GPIO口*/
-static int trip_port = INVALID_GPIO_PORT;
+static int trig_pin = INVALID_GPIO_PORT;
 /*信号接收GPIO口*/
-static int echo_port = INVALID_GPIO_PORT;
+static int echo_pin = INVALID_GPIO_PORT;
+
+/*loop 间隔 ms*/
+static int interval=1000;
+/*高电平持续时间, us*/
+static int high_us=10;
+
+static pthread_t echo_thread;
 
 /*回调函数*/
 typedef void(*callfunc)(double distance);
@@ -29,7 +37,7 @@ static void interruptfunc(){
 	long long time_s=0, time_e=0;
 	double dis=0.0;
 	time_s=get_us();
-	while(digitalRead(echo_port)==1);
+	while(digitalRead(echo_pin)==1);
 	time_e=get_us();
 	dis=get_distance(time_s, time_e);
 	if(echo_callfunc!=NULL){
@@ -38,66 +46,27 @@ static void interruptfunc(){
 }
 
 /*设置控制和信号输入引脚，回调函数*/
-extern int echo_setup(int trig_port_, int echo_port_, void (*function)(double)){
+extern int echo_setup(int trig_pin_, int echo_pin_, void (*function)(double)){
 	int flag=1;
-	trip_port=trig_port_;
-	echo_port=echo_port_;
+	trig_pin=trig_pin_;
+	echo_pin=echo_pin_;
 	echo_callfunc=function;
 
-	wiringPiSetup();
-	
 	// register the function to deal with the echo events
-	wiringPiISR(echo_port, INT_EDGE_RISING, &interruptfunc);
+	wiringPiISR(echo_pin, INT_EDGE_RISING, &interruptfunc);
   
-	pinMode(trip_port, OUTPUT);
+	pinMode(trig_pin, OUTPUT);
 	return 1;
 }
 
 /*进行一次回声测距，并设置高电平持续时间，最少为10us，最长为50us*/
 extern void echo_do(int us){
-	digitalWrite(trip_port,HIGH);
 	if(us<10) us=10;
 	if(us>50) us=50;
+	digitalWrite(trig_pin,HIGH);
 	delayMicroseconds(us); 
-	digitalWrite(trip_port,LOW);
-}
-
-static void loop(){
-
-}
-
-extern int echo_start(){
-
-	return 1;
-}
-extern int echo_stop(){
-
+	digitalWrite(trig_pin,LOW);
 }
 
 
-
-
-//demo
-static void show(double dis){
-	printf("distance=%.4lf\n",dis);
-}
-
-int main (int argc,char* argv[])
-{
-  if (argc < 3) {
-    printf("Usage example: ./%s trig_gpio_port echo_gpio_port\n", argv[0]);
-    return 1;
-  }
-
-	int p1 = atoi(argv[1]);
-	int p2 = atoi(argv[2]);
-	echo_setup(p1, p2, &show);
-
-	while(true) {
-		echo_do(20);	
-		delay(2000);
-	}
-
-	return 0;
-}
 

@@ -14,8 +14,6 @@ extern "C" {
 /*超声波测距模块函数*/
 extern int echo_setup(int trig_port, int echo_port, void(*function)(double));
 extern void echo_do(int us);
-extern int echo_start();
-extern int echo_stop();
 
 /*红外避障模块函数*/
 extern int avoidsensor_setup(int sensor_port, void(*function)(void));

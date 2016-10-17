@@ -35,8 +35,6 @@ extern int avoidsensor_setup(int sensor_port, void (*function)(void)){
 	sensor_gpio_port=sensor_port;
 	sensor_callfunc=function;
 
-	wiringPiSetup();
-	
 	/* register the function to deal with the echo events*/
 	wiringPiISR(sensor_port, INT_EDGE_FALLING, interruputfunc);
 
