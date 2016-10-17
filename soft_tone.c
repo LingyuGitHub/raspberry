@@ -4,11 +4,6 @@
 #include <wiringPi.h>
 #include <softTone.h>
 
-/**
- * A program to control Raspberry Pi to play music through a piezo element using WiringPi.
- *
- * @author Darran Zhang @ codelast.com
- */
 
 typedef enum { false, true } bool;
 

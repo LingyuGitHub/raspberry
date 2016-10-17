@@ -6,6 +6,10 @@
 #include <unistd.h>
 #include <memory.h>
 #include "callservo.h"
+#include "mcomn.h"
+
+lock_t servolock;
+
 
 static int cycle_time=20000;
 static int step_size=10;
@@ -123,6 +127,8 @@ extern int servo_setup(char* redirect){
 		sprintf(cmd, "%s >> %s", cmd, redirect);
 	}
 
+	initlock(&servolock);
+
 	printf("%s\n", cmd);
 	system(cmd);
 	return 1;
@@ -141,41 +147,77 @@ static int get_pinindex(int pin){
 
 /*设置指定gpio 输出指定步长脉冲*/
 extern void servo_set_step(int pi_gpio, int step){
+	lock(&servolock);
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
 	sprintf(cmd, "echo %d=%d > %s", get_pinindex(pin), step, FIFO_FILE);
 	system(cmd);
+	unlock(&servolock);
 }
-/*设置指定gpio 输出指定时间脉冲*/
+/*设置指定gpio 输出指定比例脉冲*/
 extern void servo_set_percent(int pi_gpio, int percent){
+	lock(&servolock);
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
 	sprintf(cmd, "echo %d=%d%% > %s", get_pinindex(pin), percent, FIFO_FILE);
 
 	system(cmd);
+	unlock(&servolock);
 }
-/*设置指定gpio 输出指定比例脉冲*/
+/*设置指定gpio 输出指定微秒时间脉冲*/
 extern void servo_set_us(int pi_gpio, int us){
+	lock(&servolock);
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
 	sprintf(cmd, "echo %d=%dus > %s", get_pinindex(pin), us, FIFO_FILE);
 
 	system(cmd);
+	unlock(&servolock);
 }
 /*设置指定gpio 增加指定步长脉冲*/
 extern void servo_set_addstep(int pi_gpio, int addstep){
+	lock(&servolock);
 	int pin=pi2board(pi_gpio);
 	char cmd[100]={0.0};
 
 	sprintf(cmd, "echo %d=%+d > %s", get_pinindex(pin), addstep, FIFO_FILE);
 
 	system(cmd);
+	unlock(&servolock);
+}
+/*设置指定gpip 转动到指定角度*/
+extern void servo_set_deg(int pi_gpio, int degree){
+	lock(&servolock);
+	int step=0;
+	int deg2step=(2000-1000)/step_size/180;
+
+	if(degree<0) degree=0;
+	if(degree>180) degree=180;
+
+	step=degree*deg2step;
+	servo_set_step(pi_gpio, step);
+	unlock(&servolock);
+}
+/*设置指定gpio 转动增加指定角度*/
+extern void servo_set_adddeg(int pi_gpio, int adddeg){
+	lock(&servolock);
+	int addstep=0;
+	int deg2step=(2000-1000)/step_size/180;
+
+	if(adddeg<-180) adddeg=-180;
+	if(adddeg>180) adddeg=180;
+
+	addstep=adddeg*deg2step;
+	servo_set_addstep(pi_gpio, addstep);
+	unlock(&servolock);
 }
 
+
 extern void servo_set(int pi_gpio, int value, int type){
+	lock(&servolock);
 	switch (type){
 		case SET_TYPE_STEP:
 			servo_set_step(pi_gpio, value);
@@ -186,12 +228,19 @@ extern void servo_set(int pi_gpio, int value, int type){
 		case SET_TYPE_PCNT :
 			servo_set_percent(pi_gpio, value);
 			break;
-		case SET_TYPE_ADD:
-			servo_set_addstep(pi_gpio,value);
+		case SET_TYPE_ADDSTEP:
+			servo_set_addstep(pi_gpio, value);
+			break;
+		case SET_TYPE_DEG:
+			servo_set_deg(pi_gpio, value);
+			break;
+		case SET_TYPE_ADDDEG:
+			servo_set_adddeg(pi_gpio, value);
 			break;
 		default:
 			break;
 	}
+	unlock(&servolock);
 }
 
 

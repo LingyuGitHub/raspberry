@@ -5,7 +5,6 @@
 extern "C" {
 #endif
 
-typedef enum { false, true } bool;
 #define INVALID_GPIO_PORT  -1
 
 #define HIGH 1
