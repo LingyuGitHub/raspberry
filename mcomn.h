@@ -3,10 +3,11 @@
 
 #include <pthread.h>
 
-typedef enum { false, true } bool;
 
 #ifdef __cplusplus
 extern "C" {
+#else
+typedef enum { false, true } bool;
 #endif
 
 #define lock_t            pthread_mutex_t

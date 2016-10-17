@@ -4,7 +4,7 @@
 #include <wiringPi.h>
 #include <string.h>
 
-#define "wheel.h"
+#include "wheel.h"
 
 #define MAX_WHEELS   4
 static int pins[MAX_WHEELS][4]={{0.0}};
@@ -23,7 +23,7 @@ static int checkpins(int p0, int p1, int p2, int p3){
 		if(pins[n][0]!=p0 && pins[n][1]!=p0 && pins[n][2]!=p0 && pins[n][3]!=p0 &&
 			pins[n][0]!=p1 && pins[n][1]!=p1 && pins[n][2]!=p1 && pins[n][3]!=p1 &&
 			pins[n][0]!=p2 && pins[n][1]!=p2 && pins[n][2]!=p2 && pins[n][3]!=p2 &&
-			pins[n][0]!=p3 && pins[n][1]!=p3 && pins[n][2]!=p3 && pins[n][3]!=p3 &&
+			pins[n][0]!=p3 && pins[n][1]!=p3 && pins[n][2]!=p3 && pins[n][3]!=p3 
 			){
 			continue;
 		}else{
@@ -59,27 +59,27 @@ extern int addpins(int p0, int p1, int p2, int p3){
 }
 
 
-extern int control_wheel(int pin, int action){	
-	if(pin>=pin_num){
+extern int control_wheel(int group, int action){	
+	if(group>=pin_num){
 		return -1;
 	}
 	switch(action){
 		case FORWARD:
-			gpiow(pins[pin], 1,0,1,0);	
+			gpiow(pins[group], 1,0,1,0);	
 			break;
 		case BACKOFF:
-			gpiow(pins[pin], 0,1,0,1);	
+			gpiow(pins[group], 0,1,0,1);	
 			break;
 		case TURNLEFT:
-			gpiow(pins[pin], 0,1,1,0);	
+			gpiow(pins[group], 1,0,0,1);	
 			break;
 		case TURNRIGHT:
-			gpiow(pins[pin], 1,0,0,1);	
+			gpiow(pins[group], 0,1,1,0);	
 			break;
 		case STOP:
-			gpiow(pins[pin], 0,0,0,0);	
+			gpiow(pins[group], 0,0,0,0);	
 			break;
-		case default:
+		default:
 			return -1;
 	}
 

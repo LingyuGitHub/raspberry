@@ -20,7 +20,6 @@ typedef void(*callfunc)(void);
 /*回调函数*/
 static callfunc sensor_callfunc;
 
-
 static void interruputfunc(){
 	time_2=get_ms();
 	if((time_2-time_1)>DEBOUNCE_TIME){
@@ -44,26 +43,3 @@ extern int avoidsensor_setup(int sensor_port, void (*function)(void)){
 }
 
 
-/*demo*/
-/*
-int num=0;
-static void show(){
-	printf("erro  %d\n", ++num);
-}
-
-int main (int argc,char* argv[])
-{
-  if (argc < 2) {
-    printf("Usage example: ./%s trig_gpio_port echo_gpio_port\n", argv[0]);
-    return 1;
-  }
-
-	int p1 = atoi(argv[1]);
-	avoidsensor_setup(p1, &show);
-
-	while(1) {
-	}
-
-	return 0;
-}
-*/
