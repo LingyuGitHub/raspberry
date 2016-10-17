@@ -5,21 +5,19 @@
 #include "soft_tone.h"
 
 
-typedef enum { false, true } bool;
-
-int scale[23] = {659, 659, 0, 659, 0, 523, 659, 0, 784, 0, 0, 0, 392, 0, 0, 0, 523, 0, 0, 392, 0, 0, 330};
-
 static void play(int pin, int *music, int lenth){
 	int i=0;
 	for(i=0;i<lenth;i++){
 		softToneWrite(pin, music[i]);
+		delay(150);
 	}
+	softToneWrite(pin, ZERO);
 }
 
 /*设置播放某一段歌曲一次，指定播放引脚，播放音符，音符长度*/
 extern int play_once(int pin, int *music, int lenth){
 	if(softToneCreate(pin)==-1)
-		return =-1;
+		return -1;
 	play(pin,music, lenth);
 	softToneStop(pin);
 	return 1;
@@ -38,7 +36,11 @@ extern int play_loop(int pin, int *music, int lenth, int times, int interval){
 	return i;
 }
 
-/*
+
+int scale[23] = {MI_M, MI_M, ZERO, MI_M, ZERO, DO_M, MI_M, ZERO, SO_M, ZERO, ZERO, ZERO, SO_L, ZERO, ZERO, ZERO, DO_M, ZERO, ZERO, SO_L, ZERO, ZERO, MI_L};
+
+int marry[]={SO_L, DO_M, DO_M, DO_M, DO_M, SO_L, RI_M, XI_L, DO_M,DO_M,SO_L,DO_M,FA_M,FA_M,MI_M,RI_M,DO_M,XI_L,DO_M,RI_M,RI_M, SO_L, DO_M, DO_M, DO_M, DO_M, SO_L, RI_M, XI_L, DO_M,DO_M,SO_L,DO_M,MI_M, SO_M, MI_M, DO_L, LA_L,RI_M, MI_M,DO_M,DO_M};
+
 int main (int argc, char *argv[]) {
   const char* programName = argv[0];
   if(argc < 2) {
@@ -50,24 +52,12 @@ int main (int argc, char *argv[]) {
 
   wiringPiSetup();
 
-  if (0 != softToneCreate(gpioPort)) {
-    printf("Create software tone failed!\n");
-    return 1;
-  }
-
-  int i;
-  int loopCount = 0;
-  int arrayLength = sizeof(scale) / sizeof(int);
-  while (true) {
-    printf("Has played the music for %d times\n", loopCount);
-    
-    for (i = 0; i < arrayLength; ++i) {
-      softToneWrite(gpioPort, scale[i]);
-      delay(200);
-    }
-
-    delay(500);
-    ++loopCount;
-  }
+  play_loop(gpioPort, marry, sizeof(marry)/sizeof(int), 3, 1000);
+  return 1;
 }
-*/
+
+
+
+
+
+

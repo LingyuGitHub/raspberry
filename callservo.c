@@ -133,6 +133,9 @@ extern int servo_setup(char* redirect){
 	system(cmd);
 	return 1;
 }
+extern void servo_stop(){
+	system("killall servo");
+}
 
 static int get_pinindex(int pin){
 	int i=0;
@@ -192,12 +195,11 @@ extern void servo_set_addstep(int pi_gpio, int addstep){
 extern void servo_set_deg(int pi_gpio, int degree){
 	lock(&servolock);
 	int step=0;
-	int deg2step=(2000-1000)/step_size/180;
 
 	if(degree<0) degree=0;
 	if(degree>180) degree=180;
 
-	step=degree*deg2step;
+	step=50+(max-min)*degree/180;
 	servo_set_step(pi_gpio, step);
 	unlock(&servolock);
 }
@@ -205,12 +207,11 @@ extern void servo_set_deg(int pi_gpio, int degree){
 extern void servo_set_adddeg(int pi_gpio, int adddeg){
 	lock(&servolock);
 	int addstep=0;
-	int deg2step=(2000-1000)/step_size/180;
 
 	if(adddeg<-180) adddeg=-180;
 	if(adddeg>180) adddeg=180;
 
-	addstep=adddeg*deg2step;
+	addstep=(max-min)*adddeg/180;
 	servo_set_addstep(pi_gpio, addstep);
 	unlock(&servolock);
 }
