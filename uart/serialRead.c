@@ -5,21 +5,21 @@
 
 #include <wiringSerial.h>
 
-int main ()
+int main()
 {
-  int fd ;
+    int fd;
 
-  if ((fd = serialOpen ("/dev/ttyAMA0", 9600)) < 0)
-  {
-    fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
-    return 1 ;
-  }
+    if ((fd = serialOpen("/dev/ttyAMA0", 9600)) < 0)
+    {
+        fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
+        return 1;
+    }
 
-// Loop, getting and printing characters
+    // Loop, getting and printing characters
 
-  for (;;)
-  {
-    fprintf(stdout, "%c", serialGetchar(fd));
-    fflush (stdout) ;
-  }
+    for (;;)
+    {
+        fprintf(stdout, "%c", serialGetchar(fd));
+        fflush(stdout);
+    }
 }

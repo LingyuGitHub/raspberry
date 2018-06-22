@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.7)
+project(rpi)
+add_subdirectory(blink)
+add_subdirectory(oled)
+add_subdirectory(servo)
+add_subdirectory(softtone)
+add_subdirectory(uart)

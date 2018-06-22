@@ -9,18 +9,20 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 
-u16 ubx_checksum(u8 *arr, int len){
-	int i=0;
-	u8 ck_a=0x00,ck_b=0x00;
-	u16 res=0x0000;
-	for(i=0;i<len;i++){
-		ck_a+=arr[i];
-		ck_b+=ck_a;
-	}
-	arr[len]=ck_a;
-	arr[len+1]=ck_b;
-	res=(ck_a<<8)+ck_b;
-	return res;
+u16 ubx_checksum(u8 *arr, int len)
+{
+    int i = 0;
+    u8 ck_a = 0x00, ck_b = 0x00;
+    u16 res = 0x0000;
+    for (i = 0; i < len; i++)
+    {
+        ck_a += arr[i];
+        ck_b += ck_a;
+    }
+    arr[len] = ck_a;
+    arr[len + 1] = ck_b;
+    res = (ck_a << 8) + ck_b;
+    return res;
 }
 
 u8 enagga[] = { 0XB5,0x62,0x06,0x01,0x06,0x00,0xF0,0x00,0x00,0x01,0x00,0x00,0xFE,0x18 };//  使能GGA  
@@ -42,91 +44,81 @@ u8 disgst[] = { 0xB5,0x62,0x06,0x01,0x06,0x00,0xF0,0x07,0x00,0x00,0x00,0x00,0x04
 u8 enazda[] = { 0xB5,0x62,0x06,0x01,0x06,0x00,0xF0,0x08,0x00,0x01,0x00,0x00,0x06,0x40 };//  使能ZDA  
 u8 diszda[] = { 0XB5,0x62,0x06,0x01,0x06,0x00,0xF0,0x08,0x00,0x00,0x00,0x00,0x05,0x3D };//  取消ZDA  
 
-u8 ena1[] = {0xb5, 0x62, 0x06, 0x01, 0x08, 0x00, 0x03, 0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x23, 0x2e};
-u8 ena2[] = {0xb5, 0x62, 0x06, 0x01, 0x08, 0x00, 0x03, 0x0f, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x22, 0x27};
-u8 ena3[] = {0xb5, 0x62, 0x06, 0x01, 0x08, 0x00, 0x01, 0x20, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x31, 0x8e};
-int main ()
+u8 ena1[] = { 0xb5, 0x62, 0x06, 0x01, 0x08, 0x00, 0x03, 0x10, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x23, 0x2e };
+u8 ena2[] = { 0xb5, 0x62, 0x06, 0x01, 0x08, 0x00, 0x03, 0x0f, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x22, 0x27 };
+u8 ena3[] = { 0xb5, 0x62, 0x06, 0x01, 0x08, 0x00, 0x01, 0x20, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x31, 0x8e };
+int main()
 {
-	int fd ;
-	int res=0, flag=0;
-	int i=0;
-	u16 ck_ab=0x0000;
-	if ((fd = serialOpen ("/dev/ttyAMA0", 9600)) < 0)
-	{
-		fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
-		return 1 ;
-	}
+    int fd;
+    int res = 0, flag = 0;
+    int i = 0;
+    u16 ck_ab = 0x0000;
+    if ((fd = serialOpen("/dev/ttyAMA0", 9600)) < 0)
+    {
+        fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
+        return 1;
+    }
 
-	 if (wiringPiSetup () == -1)
-	{
-		fprintf (stdout, "Unable to start wiringPi: %s\n", strerror (errno)) ;
-		return 1 ;
-	}
+    if (wiringPiSetup() == -1)
+    {
+        fprintf(stdout, "Unable to start wiringPi: %s\n", strerror(errno));
+        return 1;
+    }
 
-	//ck_ab=ubx_checksum(&enaraw[2], 10);
+    //ck_ab=ubx_checksum(&enaraw[2], 10);
     //fprintf(stdout,"%04x\n", ck_ab);
-	for(i=0;i<sizeof(ena1)/sizeof(u8);i++){
-		serialPutchar(fd, ena1[i]);
-	}
-	for(i=0;i<sizeof(ena2)/sizeof(u8);i++){
-		serialPutchar(fd, ena2[i]);
-	}
-	for(i=0;i<sizeof(ena3)/sizeof(u8);i++){
-		serialPutchar(fd, ena3[i]);
-	}
-/*
-	for(i=0;i<sizeof(disgsv)/sizeof(u8);i++){
-		serialPutchar(fd, disgsv[i]);
-	}
-	for(i=0;i<sizeof(disgll)/sizeof(u8);i++){
-		serialPutchar(fd, disgll[i]);
-	}
-	for(i=0;i<sizeof(disgga)/sizeof(u8);i++){
-		serialPutchar(fd, disgga[i]);
-	}
-	for(i=0;i<sizeof(disvtg)/sizeof(u8);i++){
-		serialPutchar(fd, disvtg[i]);
-	}
-	for(i=0;i<sizeof(disrmc)/sizeof(u8);i++){
-		serialPutchar(fd, disrmc[i]);
-	}
-	for(i=0;i<sizeof(disgsa)/sizeof(u8);i++){
-		serialPutchar(fd, disgsa[i]);
-	}
-*/
+    for (i = 0; i < sizeof(ena1) / sizeof(u8); i++)
+    {
+        serialPutchar(fd, ena1[i]);
+    }
+    for (i = 0; i < sizeof(ena2) / sizeof(u8); i++)
+    {
+        serialPutchar(fd, ena2[i]);
+    }
+    for (i = 0; i < sizeof(ena3) / sizeof(u8); i++)
+    {
+        serialPutchar(fd, ena3[i]);
+    }
+    for (i = 0; i < sizeof(enagsv) / sizeof(u8); i++)
+    {
+        serialPutchar(fd, enagsv[i]);
+    }
+    for (i = 0; i < sizeof(enagll) / sizeof(u8); i++)
+    {
+        serialPutchar(fd, enagll[i]);
+    }
+    for (i = 0; i < sizeof(enagga) / sizeof(u8); i++)
+    {
+        serialPutchar(fd, enagga[i]);
+    }
+    for (i = 0; i < sizeof(enavtg) / sizeof(u8); i++)
+    {
+        serialPutchar(fd, enavtg[i]);
+    }
+    for (i = 0; i < sizeof(enarmc) / sizeof(u8); i++)
+    {
+        serialPutchar(fd, enarmc[i]);
+    }
+    for (i = 0; i < sizeof(enagsa) / sizeof(u8); i++)
+    {
+        serialPutchar(fd, enagsa[i]);
+    }
+    fprintf(stdout, "ok\n");
 
-	for(i=0;i<sizeof(enagsv)/sizeof(u8);i++){
-		serialPutchar(fd, enagsv[i]);
-	}
-	for(i=0;i<sizeof(enagll)/sizeof(u8);i++){
-		serialPutchar(fd, enagll[i]);
-	}
-	for(i=0;i<sizeof(enagga)/sizeof(u8);i++){
-		serialPutchar(fd, enagga[i]);
-	}
-	for(i=0;i<sizeof(enavtg)/sizeof(u8);i++){
-		serialPutchar(fd, enavtg[i]);
-	}
-	for(i=0;i<sizeof(enarmc)/sizeof(u8);i++){
-		serialPutchar(fd, enarmc[i]);
-	}
-	for(i=0;i<sizeof(enagsa)/sizeof(u8);i++){
-		serialPutchar(fd, enagsa[i]);
-	}
-	fprintf(stdout, "ok\n");
-
-	for(;;){
-		res=serialGetchar(fd);
-		if(res==0xb5){
-			fprintf (stdout,"\n") ;
-			flag=1;
-		}
-		if(flag==1 && res=='$')
-			break;
-		else if(flag==1)
-			fprintf(stdout, "%02x ", res);
-		fflush(stdout);
-	}
-	printf ("\n") ;
-	return 0 ;
+    for (;;)
+    {
+        res = serialGetchar(fd);
+        if (res == 0xb5)
+        {
+            fprintf(stdout, "\n");
+            flag = 1;
+        }
+        if (flag == 1 && res == '$')
+            break;
+        else if (flag == 1)
+            fprintf(stdout, "%02x ", res);
+        fflush(stdout);
+    }
+    printf("\n");
+    return 0;
 }
