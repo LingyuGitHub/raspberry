@@ -31,3 +31,9 @@ tags
 
 mycar
 .ycm_extra_conf.py
+*.sln
+*bin
+*obj
+*.vs
+*.vcxproj
+*.vcxproj.user
