@@ -80,13 +80,13 @@ float tempchange(int lsb, int msb)
 
     if (msb >= 0xF0) //负温度
     {
-        msb = 255 - msb;
-        lsb = 256 - lsb;
-        tem = -(msb * 16 * 16 + lsb);
+        msb = (~msb) & 0XFF;
+        lsb = ((~lsb) & 0XFF) + 1;
+        tem = -(msb << 8 | lsb);
     }
     else
     {
-        tem = ((msb<<8) + lsb); //正温度
+        tem = (msb << 8) | lsb; //正温度
     }
 
     temp = tem * 0.0625;
