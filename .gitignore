@@ -37,3 +37,5 @@ mycar
 *.vs
 *.vcxproj
 *.vcxproj.user
+Debug
+test
