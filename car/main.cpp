@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <ArduiPi_SSD1306.h>
-//#include <Adafruit_GFX.h>
-//#include <Adafruit_SSD1306.h>
 #ifdef __cplusplus
 extern "C" {
 #include <wiringPi.h>
@@ -12,7 +9,6 @@ extern "C" {
 #include "msensor.h"
 #include "mcomn.h"
 #include "wheel.h"
-#include "ssd1306.h"
 
 int state=STOP;
 
@@ -20,7 +16,6 @@ static void showdis(double dis){
 	char str[100]={0.0};
 	sprintf(str,"dis=%.3lf", dis);
 	
-	oled_writetext(str);
 	if(dis<=0.5 and state==FORWARD){
 		control_wheel(0, STOP);
 	}
@@ -36,8 +31,6 @@ int main(){
 	if(addpins(wheel_pins[0], wheel_pins[1],wheel_pins[2],wheel_pins[3])==-1){
 		return -1;
 	}
-
-	oled_init();
 
 	echo_setup(echo_pins[0], echo_pins[1], showdis);
 	echo_start();
