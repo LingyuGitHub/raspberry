@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <wiringPi.h>
 #include <softTone.h>
-#include "soft_tone.h"
+#include "softtone.h"
 
 
 static void play(int pin, int *music, int lenth)
