@@ -1,12 +1,11 @@
-#include <ArduiPi_SSD1306.h>
-#include <Adafruit_SSD1306.h>
+#include <ArduiPi_OLED_lib.h>
+#include <ArduiPi_OLED.h>
 #include <Adafruit_GFX.h>
 #include <stdio.h>
 
-//#include "mcomn.h"
-#include "ssd1306.h"
+#include "oled.h"
 
-Adafruit_SSD1306 display;
+ArduiPi_OLED display;
 
 extern bool oled_init()
 {
@@ -20,7 +19,7 @@ extern bool oled_init()
     return true;
 }
 
-extern void oled_writetext(char* str)
+extern void oled_writetext(const char* str)
 {
     display.clearDisplay();
     display.setCursor(0, 0);
@@ -28,13 +27,18 @@ extern void oled_writetext(char* str)
     display.display();
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+    int i=0;
     oled_init();
 
-    while (1)
+    while (true)
     {
-        oled_writetext("1234567.111\n1234567.111\n1234567.111");
-        return 1;
+        for (i=0; i<argc; i++)
+        {
+            oled_writetext(argv[i]);
+            sleep(1);
+        }
     }
+    return 1;
 }
