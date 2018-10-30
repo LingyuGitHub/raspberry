@@ -27,19 +27,13 @@ int main()
     {
         while (1)
         {
-            if ((UartBuff[0] = serialGetchar(fd)) != NULL)
-            {
-                fprintf(stdout, "%c", UartBuff[0]);
-            }
+            if ((UartBuff[0] = serialGetchar(fd)) != 0)
+                fprintf(stdout, "%c\n", UartBuff[0]);
             else
-            {
                 break;
-            }
         }
         for (i = 0; i < 10; i++)
-        {
             serialPutchar(fd, 'b');
-        }
     }
     return EXIT_SUCCESS;
 }

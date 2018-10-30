@@ -1,5 +1,8 @@
 #include <wiringPi.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #ifndef bool
 #define bool int
@@ -17,6 +20,7 @@ bool oneWireReset(int pin)
     digitalWrite(pin, HIGH);
     delayMicroseconds(30);
     pinMode(pin, INPUT);
+    pullUpDnControl(pin, PUD_UP);
     if (digitalRead(pin) == LOW)
         ack = true;
     else
@@ -35,7 +39,6 @@ void writeBit(int pin, int bit)
     digitalWrite(pin, HIGH);
     delayMicroseconds(1);
 }
-
 
 void oneWireSendComm(int pin, int byte)
 {
@@ -56,6 +59,7 @@ int readBit(int pin)
     delayMicroseconds(2);
     digitalWrite(pin, HIGH);
     pinMode(pin, INPUT);
+    pullUpDnControl(pin, PUD_UP);
     delayMicroseconds(2);
     tmp = digitalRead(pin);
     delayMicroseconds(40);
@@ -93,26 +97,41 @@ float tempchange(int lsb, int msb)
     return temp;
 }
 
-void getTemprature(int pin)
+bool getTemprature(int pin, double *t)
 {
-    if (oneWireReset(pin))
-    {
-        oneWireSendComm(pin, 0xcc);//忽略ROM
-        oneWireSendComm(pin, 0x44);//开始温度变换
-    }
-    if (oneWireReset(pin))
-    {
-        oneWireSendComm(pin, 0xcc);//忽略ROM
-        oneWireSendComm(pin, 0xbe);//读暂存
-        int a = oneWireReceive(pin);//读LSB
-        int b = oneWireReceive(pin);//读MSB
-        printf("%d %d %.3lf\n", a, b, tempchange(a, b));
-    }
+    if (!oneWireReset(pin))
+        return false;
+    oneWireSendComm(pin, 0xcc); //忽略ROM
+    oneWireSendComm(pin, 0x44); //开始温度变换
+    if (!oneWireReset(pin))
+        return false;
+    oneWireSendComm(pin, 0xcc);  //忽略ROM
+    oneWireSendComm(pin, 0xbe);  //读暂存
+    int a = oneWireReceive(pin); //读LSB
+    int b = oneWireReceive(pin); //读MSB
+    if (t != NULL)
+        *t = tempchange(a, b);
+    return true;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    wiringPiSetup();
-    getTemprature(0);
-    return 1;
+    if (argc <= 1)
+    {
+        printf("Usage example: %s gpio_port\n", argv[0]);
+        return -1;
+    }
+    int pin=atoi(argv[1]);
+
+    if (wiringPiSetup())
+        return -1;
+
+    double t = 0.0;
+    while (1)
+    {
+        if (getTemprature(pin, &t))
+            printf("Tempreture=%.1lf\n", t);
+        sleep(2);
+    }
+    return 0;
 }

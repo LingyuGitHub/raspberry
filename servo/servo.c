@@ -6,18 +6,24 @@
  ************************************************************************/
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <wiringPi.h>
 #include <softPwm.h>
 #include <unistd.h>
 
-int main() 
+int main(int argc, char *argv[]) 
 {
-    int i = 0;
-    if (wiringPiSetup())
+    if (argc <= 1) 
     {
-        printf("error\n");
+        printf("Usage example: %s gpio_pin\n", argv[0]);
         return -1;
     }
+
+    int i = 0;
+    int pin=atoi(argv[1]);
+    if (wiringPiSetup())
+        return -1;
+
     softPwmCreate(0, 0, 200);
 
     while (1)
@@ -35,4 +41,5 @@ int main()
             delay(100);
         }
     }
+    return 0;
 }

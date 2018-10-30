@@ -4,7 +4,6 @@
 #include <softTone.h>
 #include "softtone.h"
 
-
 static void play(int pin, int *music, int lenth)
 {
     int i = 0;
@@ -41,30 +40,23 @@ extern int play_loop(int pin, int *music, int lenth, int times, int interval)
     return i;
 }
 
+int scale[23] = {MI_M, MI_M, ZERO, MI_M, ZERO, DO_M, MI_M, ZERO, SO_M, ZERO, ZERO, ZERO, SO_L, ZERO, ZERO, ZERO, DO_M, ZERO, ZERO, SO_L, ZERO, ZERO, MI_L};
 
-int scale[23] = { MI_M, MI_M, ZERO, MI_M, ZERO, DO_M, MI_M, ZERO, SO_M, ZERO, ZERO, ZERO, SO_L, ZERO, ZERO, ZERO, DO_M, ZERO, ZERO, SO_L, ZERO, ZERO, MI_L };
-
-int marry[] = { SO_L, DO_M, DO_M, DO_M, DO_M, SO_L, RI_M, XI_L, DO_M,DO_M,SO_L,DO_M,FA_M,FA_M,MI_M,RI_M,DO_M,XI_L,DO_M,RI_M,RI_M, SO_L, DO_M, DO_M, DO_M, DO_M, SO_L, RI_M, XI_L, DO_M,DO_M,SO_L,DO_M,MI_M, SO_M, MI_M, DO_L, LA_L,RI_M, MI_M,DO_M,DO_M };
+int marry[] = {SO_L, DO_M, DO_M, DO_M, DO_M, SO_L, RI_M, XI_L, DO_M, DO_M, SO_L, DO_M, FA_M, FA_M, MI_M, RI_M, DO_M, XI_L, DO_M, RI_M, RI_M, SO_L, DO_M, DO_M, DO_M, DO_M, SO_L, RI_M, XI_L, DO_M, DO_M, SO_L, DO_M, MI_M, SO_M, MI_M, DO_L, LA_L, RI_M, MI_M, DO_M, DO_M};
 
 int main(int argc, char *argv[])
 {
-    const char* programName = argv[0];
-    if (argc < 2)
+    if (argc <= 1)
     {
-        fprintf(stderr, "Usage: %s gpio_port\n", programName);
+        fprintf(stderr, "Usage: %s gpio_pin\n", argv[0]);
         return -1;
     }
 
-    int gpioPort = atoi(argv[1]);
+    int pin = atoi(argv[1]);
 
-    wiringPiSetup();
+    if (wiringPiSetup())
+        return -1;
 
-    play_loop(gpioPort, marry, sizeof(marry) / sizeof(int), 3, 1000);
+    play_loop(pin, marry, sizeof(marry) / sizeof(int), 3, 1000);
     return 1;
 }
-
-
-
-
-
-

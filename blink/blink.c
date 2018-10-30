@@ -5,23 +5,24 @@
 
 int main(int argc, char* argv[])
 {
-    if (argc < 2) 
+    if (argc <= 1) 
     {
-        printf("Usage example: ./blink gpio_port\n");
-        return 1;
+        printf("Usage example: %s gpio_pin\n", argv[0]);
+        return -1;
     }
-    int gpioPort = atoi(argv[1]);
+    int pin= atoi(argv[1]);
 
-    wiringPiSetup();
+    if (wiringPiSetup())
+        return -1;
 
-    pinMode(gpioPort, OUTPUT);  // set mode to output
+    pinMode(pin, OUTPUT);  
 
     int level = 0;
     while (1) 
     {
         level = (0 == level) ? 1 : 0;
-        digitalWrite(gpioPort, level); // output a low/high level to the specified GPIO port
-        sleep((unsigned int)1);
+        digitalWrite(pin, level); 
+        sleep(1);
     }
 
     return 0;

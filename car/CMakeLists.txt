@@ -3,7 +3,7 @@ project(car)
 set(CMAKE_BUILD_TYPE_DEBUG)
 
 set(SRC_LIST main.cpp 
-            avoidance_sensor.c 
+            msensor.c 
             callservo.c 
             getdistance.c 
             mcomn.c 

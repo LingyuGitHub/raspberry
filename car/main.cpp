@@ -13,7 +13,7 @@ extern "C" {
 int state=STOP;
 
 static void showdis(double dis){
-	char str[100]={0.0};
+	char str[100]={0};
 	sprintf(str,"dis=%.3lf", dis);
 	
 	if(dis<=0.5 and state==FORWARD){
