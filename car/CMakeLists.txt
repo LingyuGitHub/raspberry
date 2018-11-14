@@ -4,7 +4,6 @@ set(CMAKE_BUILD_TYPE_DEBUG)
 
 set(SRC_LIST main.cpp 
             msensor.c 
-            callservo.c 
             getdistance.c 
             mcomn.c 
             wheel.c)
