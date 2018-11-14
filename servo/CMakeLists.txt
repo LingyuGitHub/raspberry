@@ -4,7 +4,7 @@ set(CMAKE_BUILD_TYPE DEBUG)
 
 set(SRC_LIST servo.c)
 
-link_libraries(wiringPi)
+link_libraries(wiringPi pthread)
 
 add_executable(servo ${SRC_LIST})
 
