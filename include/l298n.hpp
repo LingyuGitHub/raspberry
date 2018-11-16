@@ -68,11 +68,11 @@ public:
     }
     void turnLeft()
     {
-        gpioWrite(0,1,1,0);
+        gpioWrite(1,0,0,1);
     }
     void turnRight()
     {
-        gpioWrite(1,0,0,1);
+        gpioWrite(0,1,1,0);
     }
     void stop()
     {
