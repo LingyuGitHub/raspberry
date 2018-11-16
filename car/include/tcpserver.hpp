@@ -57,6 +57,17 @@ public:
 
     }
 
+    void setPort(int port)
+    {
+        if (port>0)
+            m_port=port;
+    }
+
+    int getPort()
+    {
+        return m_port;
+    }
+
     //向所有的连接发送消息
     void sendMsg(const char *msg)
     {
