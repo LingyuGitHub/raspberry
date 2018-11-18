@@ -8,6 +8,7 @@ extern "C" {
 #include "l298n.hpp"
 #include "servo.hpp"
 #include "softtone.hpp"
+#include "echo.hpp"
 #include "CJsonObject/CJsonObject.hpp"
 
 using namespace std;
@@ -107,6 +108,16 @@ void testServo()
 	}
 }
 
+void testEcho()
+{
+	Echo echo(0,1);
+	while (1)
+	{
+		cout<<echo.getDistance()<<endl;
+		sleep(1);
+	}
+}
+
 int main(int argc, char **argv){
 	if (argc<=1)
 		return 1;
@@ -121,6 +132,8 @@ int main(int argc, char **argv){
 	//server.setOnRecv(onrecv);
 	//server.setOnLog(onlog);
 	//server.start();
+
+	testEcho();
 
 	while (1)
 	{
