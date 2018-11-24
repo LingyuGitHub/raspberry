@@ -3,12 +3,12 @@
 Servo myservo; // create servo object to control a servo
 // twelve servo objects can be created on most boards
 
-int pos = 0; // variable to store the servo position
 const int redPin=2;
 const int speedPin=3;
 const int echoPin = 4;
 const int trigPin = 5;
 const int servoPin = 9;
+bool isDanger=false;
 
 void setup()
 {
@@ -24,21 +24,21 @@ int n=0;
 void loop()
 {
     /*
-    for (pos = 0; pos <= 180; pos += 1)
+    for (int pos = 0; pos <= 180; pos += 1)
     { // goes from 0 degrees to 180 degrees
         // in steps of 1 degree
         servoTurn(pos);
         Serial.println(getDistance());
         delay(150); // waits 15ms for the servo to reach the position
     }
-    for (pos = 180; pos >= 0; pos -= 1)
+    for (int pos = 180; pos >= 0; pos -= 1)
     { // goes from 180 degrees to 0 degrees
         servoTurn(pos);
         Serial.println(getDistance());
         delay(150); // waits 15ms for the servo to reach the position
     }
     */
-   if (n>0 && digitalRead(redPin)==1)
+   if (isDanger && digitalRead(redPin)==1)
         undanger();
     delay(15); 
 }
@@ -70,9 +70,10 @@ void danger()
     sprintf(str, "Danger %d", n);
     Serial.println(str);
     n++;
+    isDanger=true;
 }
 void undanger()
 {
-    n=0;
     Serial.println("Undanger");
+    isDanger=false;
 }
